@@ -7,7 +7,9 @@
 #include <unistd.h>
 
 #include <X11/Xdefs.h> // For Bool
-#include <QtGui/QtGui>
+#include <QtGui>
+#include <QWidget>
+#include <QApplication>
 #include <QtCore/QVector>
 
 int be_verbose = 0;
