@@ -36,13 +36,16 @@ public:
 		_keypresses = 0;
 
 		QPalette p(palette());
-		p.setColor(QPalette::Background, Qt::black);
+		p.setColor(QPalette::Background, Qt::gray);
 		setPalette(p);
 	}
 
 	virtual void 	keyPressEvent ( QKeyEvent * event ) {
 		_keypresses++;
 		update();
+		if (event->key() == Qt::Key_Escape)
+			qApp->exit(0);
+		event->accept();
 	}
 
 	virtual void mousePressEvent ( QMouseEvent * event ) {
@@ -52,7 +55,7 @@ public:
 		_presses.append(e);
 		if (_presses.count() > 1000)
 			_presses.pop_front();
-		printf("Press: (%d, %d)\n", e.x, e.y);
+//		printf("Press: (%d, %d)\n", e.x, e.y);
 		update();
 	}
 	
@@ -63,7 +66,7 @@ public:
 		_moves.append(e);
 		if (_moves.count() > 10000)
 			_moves.pop_front();
-		printf("Move: (%d, %d)\n", e.x, e.y);
+//		printf("Move: (%d, %d)\n", e.x, e.y);
 		update();
 	}
 
@@ -73,22 +76,25 @@ public:
 		QPainter qpainter (this);
 
 		// Plot mouse movements
-		qpainter.setPen(QColor(255, 0, 0));
+		QPen pen = qpainter.pen();
+		pen.setColor(QColor(255, 255, 0));
+		pen.setWidth(2);
+		qpainter.setPen(pen);
 		first = true;
 		QVector<XY>::iterator it = _moves.begin();
+		if (first && it != _moves.end()) {
+			path.moveTo((*it).x, (*it).y);
+			first = false;
+		}
 		while (it != _moves.end()) {
-			if (first) {
-				path.moveTo((*it).x, (*it).y);
-				first = false;
-			} else
-				path.lineTo((*it).x, (*it).y);
+			path.lineTo((*it).x, (*it).y);
 			it++;
 		}
 		qpainter.drawPath(path);
 
 		// Plot mouse presses
-		qpainter.setPen(QColor(0, 0, 127));
-		qpainter.setBrush(QBrush(QColor(0, 0, 255),Qt::SolidPattern));
+		qpainter.setPen(QColor(0, 0, 0));
+		qpainter.setBrush(QBrush(QColor(0, 0, 0),Qt::SolidPattern));
 		it = _presses.begin();
 		while (it != _presses.end()) {
 			qpainter.drawEllipse((*it).x-10, (*it).y-10, 20, 20);
@@ -96,6 +102,9 @@ public:
 		}
 
 		qpainter.setPen(QColor(255, 255, 255));
+		QFont font = qpainter.font();
+		font.setPointSize(20);
+		qpainter.setFont(font);
 		qpainter.drawText(10,height()/2, QString("Keypresses: %1").arg(_keypresses));
 
 	}
