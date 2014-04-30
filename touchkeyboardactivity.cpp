@@ -19,7 +19,7 @@ struct XY {
 	int y;
 };
 
-class ActivityWidget : public QWidget {
+class ActivityWidget : public QDialog {
 	QVector<XY> _moves;
 	QVector<XY> _presses;
 	int _keypresses;
@@ -31,7 +31,7 @@ public:
 		// makes keyboardfocus misbehave when running without a window manager.
 		ensurePolished();
 		setWindowState((windowState() & ~(Qt::WindowMinimized | Qt::WindowMaximized)) | Qt::WindowFullScreen);
-		show();
+		showMaximized();
 		update();
 		_keypresses = 0;
 
