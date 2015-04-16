@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <QApplication>
 #include <QtCore/QVector>
+#include <QDialog>
 
 int be_verbose = 0;
 
